@@ -14,7 +14,7 @@
     "baseUrl": "./src"
   },
   "include": [
-    "src/**/*"
+    "src/**/*", "dist/services/user.services.ts"
   ],
   "exclude": [
     "node_modules",

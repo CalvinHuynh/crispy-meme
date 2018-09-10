@@ -1,6 +1,7 @@
 import { User } from './user.model';
-import { ManyToOne, PrimaryGeneratedColumn, Column } from 'typeorm';
+import { ManyToOne, PrimaryGeneratedColumn, Column, Entity } from 'typeorm';
 
+@Entity('Post')
 export class Post {
     @PrimaryGeneratedColumn({
         name: 'PostId',

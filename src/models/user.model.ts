@@ -2,7 +2,7 @@ import { ApiModelProperty } from '@nestjs/swagger';
 import { Column, Entity, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
 import { Post } from './post.model';
 
-@Entity()
+@Entity('User')
 export class User {
     // See if there is a type which represents a GUID
     @PrimaryGeneratedColumn({
@@ -22,6 +22,10 @@ export class User {
     })
     email: string;
 
+    @ApiModelProperty({
+        description: 'Username for features in the near future',
+        example: 'Admin1234',
+    })
     @Column({
         name: 'Username',
         length: 100,
