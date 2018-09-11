@@ -1,13 +1,18 @@
-import { User } from './user.model';
-import { ManyToOne, PrimaryGeneratedColumn, Column, Entity } from 'typeorm';
+import { UserModel } from './user.model';
+import { ManyToOne, PrimaryGeneratedColumn, Column, Entity, IsNull } from 'typeorm';
+import { ApiModelPropertyOptional, ApiModelProperty } from '@nestjs/swagger';
 
 @Entity('Post')
-export class Post {
+export class PostModel {
     @PrimaryGeneratedColumn({
         name: 'PostId',
     })
     postId: string;
 
+    @ApiModelProperty({
+        description: 'Title of the post',
+        example: 'Lorem ipsum',
+    })
     @Column({
         name: 'Title',
         nullable: false,
@@ -15,6 +20,10 @@ export class Post {
     })
     title: string;
 
+    @ApiModelProperty({
+        description: 'Select the topic category',
+        example: 'worldnews',
+    })
     @Column({
         name: 'Category',
         nullable: false,
@@ -22,6 +31,12 @@ export class Post {
     })
     category: string;
 
+    @ApiModelProperty({
+        description: 'Type your important message to the world here',
+        example: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, ' +
+            'sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.' +
+            ' Et egestas quis ipsum suspendisse ultrices gravida.',
+    })
     @Column({
         name: 'Content',
         nullable: false,
@@ -29,15 +44,38 @@ export class Post {
     })
     text: string;
 
+    @ApiModelPropertyOptional({
+        description: 'Optional attachment',
+    })
     @Column({
         name: 'Attachment',
     })
     attachment: string;
 
-    @ManyToOne(type => User, user => user.posts)
-    user: User;
+    @Column({
+        name: 'CreatedDate',
+        type: Date,
+        nullable: false,
+    })
+    createdDate: Date = null;
 
-    constructor(data: Post | {} = {}){
+    @Column({
+        name: 'UpdatedDate',
+        type: Date,
+        nullable: false,
+    })
+    updatedDate: Date = null;
+
+    @ManyToOne(type => UserModel, user => user.posts)
+    user: UserModel;
+
+    constructor(data: PostModel | {} = {}) {
         Object.assign(this, data);
+        if (!this.createdDate) {
+            this.createdDate = new Date();
+        }
+        if (this.updatedDate !== new Date()) {
+            this.updatedDate = new Date();
+        }
     }
 }
