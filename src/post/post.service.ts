@@ -14,21 +14,48 @@ export class PostService {
     return await this.postRepository.find();
   }
 
-  async saveOrUpdatePost(post: PostModel): Promise<PostModel> {
-    return await this.postRepository.save(post);
+  async createPost(post: PostModel): Promise<PostModel> {
+    const postToSaveOrUpdate = new PostModel({
+      title: post.title,
+      category: post.category,
+      text: post.text,
+      attachment: post.attachment,
+      user: post.user,
+    });
+    return await this.postRepository.save(postToSaveOrUpdate);
   }
 
-//   async findByUsername(username: string): Promise<User> {
-//     return await this.postRepository.createQueryBuilder()
-//     .where('Username = :name', { name: username })
-//     .getOne();
-//   }
+  async findPostsByUser(uId: string): Promise<PostModel[]> {
+    return await this.postRepository.createQueryBuilder()
+      .where('userUserId = :userId', { userId: uId })
+      .getMany();
+  }
 
-//   async removeByUsername(username: string): Promise<User> {
-//     const user = await this.postRepository.createQueryBuilder()
-//       .where('Username = :name', {name: username})
-//       .getOne();
+  async updatePost(post: PostModel, uId: string, pId: number): Promise<PostModel> {
+    const postToUpdate =
+      await this.postRepository.createQueryBuilder()
+        .where('userUserId = :userId', { userId: uId })
+        .andWhere('PostId = :postId', { postId: pId })
+        .getOne();
 
-//     return await this.postRepository.remove(user);
-//   }
+    if (typeof postToUpdate === 'object') {
+      postToUpdate.category = post.category;
+      postToUpdate.text = post.text;
+      postToUpdate.title = post.title;
+      postToUpdate.attachment = post.attachment;
+      postToUpdate.updatedDate = new Date();
+      return await this.postRepository.save(postToUpdate);
+    } else {
+      return null;
+    }
+  }
+
+  async deletePost(uId: string, pId: number) {
+    const postToDelete =
+      await this.postRepository.createQueryBuilder()
+        .where('userUserId = :userId', { userId: uId })
+        .andWhere('PostId = :postId', { postId: pId })
+        .getOne();
+    return await this.postRepository.delete(postToDelete);
+  }
 }

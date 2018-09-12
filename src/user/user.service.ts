@@ -2,7 +2,6 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { UserModel } from '../models/user.model';
-import { isNullOrUndefined } from 'util';
 
 @Injectable()
 export class UserService {
@@ -29,20 +28,30 @@ export class UserService {
     return await this.userRepository.remove(user);
   }
 
-  async saveOrUpdateUser(user: UserModel): Promise<UserModel> {
-    const userToSaveOrUpdate =
+  async createUser(user: UserModel): Promise<UserModel> {
+    // Create new user
+    const newUser = new UserModel({
+      username: user.username,
+      email: user.email,
+      birthDate: user.birthDate,
+    });
+    return await this.userRepository.save(newUser)
+      .then(res => Promise.resolve(res))
+      .catch(err => Promise.reject(err));
+  }
+
+  async updateUser(user: UserModel): Promise<UserModel> {
+    const userToUpdate =
       await this.userRepository.createQueryBuilder()
         .where('Username = :name', { name: user.username })
         .getOne();
-
-    // Update existing user
-    if (typeof userToSaveOrUpdate === 'object') {
-      userToSaveOrUpdate.email = user.email;
-      userToSaveOrUpdate.birthDate = user.birthDate;
-      return await this.userRepository.save(userToSaveOrUpdate);
+    if (typeof userToUpdate === 'object') {
+      userToUpdate.email = user.email;
+      userToUpdate.birthDate = user.birthDate;
+      userToUpdate.posts = user.posts;
+      return await this.userRepository.save(userToUpdate);
     } else {
-    // Create new user
-      return await this.userRepository.save(user);
+      return null;
     }
   }
 }

@@ -1,4 +1,4 @@
-import { Controller, Get, Param, Post, Body } from '@nestjs/common';
+import { Controller, Get, Param, Post, Body, Delete, Put } from '@nestjs/common';
 import { UserService } from './user.service';
 import { UserModel } from '../models/user.model';
 
@@ -12,17 +12,25 @@ export class UserController {
     }
 
     @Post()
-    async saveOrUpdate(@Body() user: UserModel): Promise<UserModel> {
-        return this.userService.saveOrUpdateUser(user);
+    async createUser(@Body() user: UserModel): Promise<UserModel> {
+        return this.userService.createUser(user);
+    }
+
+    @Put()
+    async updateUser(@Body() user: UserModel): Promise<UserModel> {
+        return this.userService.updateUser(user);
     }
 
     @Get(':username')
-    findByUsername(@Param('username') username: string): Promise<UserModel> {
+    async findByUsername(@Param('username') username: string): Promise<UserModel> {
         return this.userService.findUserByUsername(username);
     }
 
-    @Post('delete')
-    async removeByUsername(@Body() user: UserModel): Promise<UserModel> {
-        return this.userService.removeUserByUsername(user.username);
+    @Delete(':username')
+    async removeByUsername(
+        @Param('username') username: string) {
+        return this.userService.removeUserByUsername(username)
+            .then(res => Promise.resolve(res))
+            .catch(err => Promise.reject(err));
     }
 }

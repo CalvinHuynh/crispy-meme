@@ -1,29 +1,53 @@
-import { Controller, Get, Param, Post, Body } from '@nestjs/common';
+import { Controller, Get, Param, Post, Body, Put, Delete, HttpStatus } from '@nestjs/common';
 import { PostService } from './post.service';
-import { UserModel } from '../models/user.model';
 import { PostModel } from '../models/post.model';
+
+import { UserService } from '../user/user.service';
 
 @Controller('post')
 export class PostController {
-    constructor(private readonly postService: PostService) { }
+    constructor(
+        private readonly postService: PostService,
+        private readonly userService: UserService) { }
 
     @Get()
-    findAll(): Promise<PostModel[]> {
+    findAllPosts(): Promise<PostModel[]> {
         return this.postService.findAllPosts();
     }
 
-    @Post()
-    async saveOrUpdate(@Body() post: PostModel): Promise<PostModel> {
-        return this.postService.saveOrUpdatePost(post);
+    @Get(':username')
+    async findPostByUser(
+        @Param('username') username: string): Promise<PostModel[]> {
+        const user = await this.userService.findUserByUsername(username);
+        return await this.postService.findPostsByUser(user.userId);
     }
 
-    // @Get(':username')
-    // findByUsername(@Param('username') username: string): Promise<UserModel> {
-    //     return this.postService.findUserByUsername(username);
-    // }
+    @Post(':username')
+    async createPost(
+        @Body() post: PostModel,
+        @Param('username') username: string): Promise<PostModel> {
+        const user = await this.userService.findUserByUsername(username);
+        post.user = user;
 
-    // @Post('delete')
-    // async removeByUsername(@Body() user: UserModel): Promise<UserModel> {
-    //     return this.postService.removeUserByUsername(user.username);
-    // }
+        const newPost = await this.postService.createPost(post);
+        return newPost;
+    }
+
+    @Put(':username/:postId')
+    async updatePost(
+        @Param('username') username: string,
+        @Param('postId') postId: number,
+        @Body() post: PostModel): Promise<PostModel> {
+        const user = await this.userService.findUserByUsername(username);
+        return await this.postService.updatePost(post, user.userId, postId);
+    }
+
+    @Delete(':username/:postId')
+    async deletePost(
+        @Param('username') username: string,
+        @Param('postId') postId: number) {
+        const user = await this.userService.findUserByUsername(username);
+        await this.postService.deletePost(user.userId, postId);
+        return HttpStatus.OK;
+    }
 }

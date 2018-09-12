@@ -11,8 +11,8 @@ export function GenerateEmail(prefixSize = 12, postFixSize = 5) {
     let emailPostFix = '';
     let emailTopLevelDomain = '';
 
-    const emailPrefixSize = Math.floor(Math.random() * Math.floor(prefixSize));
-    const emailPostfixSize = Math.floor(Math.random() * Math.floor(postFixSize));
+    const emailPrefixSize = Math.floor(Math.random() * Math.floor(prefixSize) + 4);
+    const emailPostfixSize = Math.floor(Math.random() * Math.floor(postFixSize) + 4);
 
     // Generates a domain length between size 2 and 4
     const emailDomainLength = Math.floor(Math.random() * Math.floor(2) + 2);

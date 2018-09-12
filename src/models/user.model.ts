@@ -1,12 +1,9 @@
 import { ApiModelProperty } from '@nestjs/swagger';
 import { Column, Entity, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
 import { PostModel } from './post.model';
-import { Moment } from 'moment';
-import { GetCurrentDateTime } from 'helper/datetime.helper';
 
 @Entity('User')
 export class UserModel {
-    private moment: Moment;
     // See if there is a type which represents a GUID
     @PrimaryGeneratedColumn({
         name: 'UserId',
