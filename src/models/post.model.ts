@@ -1,6 +1,7 @@
 import { UserModel } from './user.model';
 import { ManyToOne, PrimaryGeneratedColumn, Column, Entity, IsNull } from 'typeorm';
 import { ApiModelPropertyOptional, ApiModelProperty } from '@nestjs/swagger';
+import { TopicModel } from './topic.model';
 
 @Entity('Post')
 export class PostModel {
@@ -15,18 +16,18 @@ export class PostModel {
     })
     @Column({
         name: 'Title',
-        nullable: false,
+        nullable: true,
         length: 100,
     })
     title: string;
 
     @ApiModelProperty({
-        description: 'Select the topic category',
+        description: 'Category description',
         example: 'worldnews',
     })
     @Column({
         name: 'Category',
-        nullable: false,
+        nullable: true,
         length: 255,
     })
     category: string;
@@ -69,12 +70,15 @@ export class PostModel {
     @ManyToOne(type => UserModel, user => user.posts)
     user: UserModel;
 
+    @ManyToOne(type => TopicModel, topic => topic.posts)
+    topic: TopicModel;
+
     constructor(data: PostModel | {} = {}) {
         Object.assign(this, data);
         if (!this.createdDate) {
             this.createdDate = new Date();
         }
-        if (this.updatedDate !== new Date()) {
+        if (this.updatedDate !== new Date() || !this.updatedDate) {
             this.updatedDate = new Date();
         }
     }

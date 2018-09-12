@@ -31,7 +31,7 @@ export class PostService {
       .getMany();
   }
 
-  async updatePost(post: PostModel, uId: string, pId: number): Promise<PostModel> {
+  async updatePost(post: PostModel, uId: string, pId: string): Promise<PostModel> {
     const postToUpdate =
       await this.postRepository.createQueryBuilder()
         .where('userUserId = :userId', { userId: uId })
@@ -50,7 +50,7 @@ export class PostService {
     }
   }
 
-  async deletePost(uId: string, pId: number) {
+  async deletePost(uId: string, pId: string) {
     const postToDelete =
       await this.postRepository.createQueryBuilder()
         .where('userUserId = :userId', { userId: uId })

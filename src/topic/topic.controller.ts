@@ -1,0 +1,95 @@
+import { Controller, Get, Param, Post, Body, Put, Delete, HttpStatus } from '@nestjs/common';
+import { TopicService } from './topic.service';
+import { PostService } from '../post/post.service';
+import { UserService } from '../user/user.service';
+import { TopicModel } from '../models/topic.model';
+import { ApiUseTags } from '@nestjs/swagger';
+import { PostModel } from '../models/post.model';
+
+@ApiUseTags('Topic')
+@Controller('topic')
+export class TopicController {
+    constructor(
+        private readonly topicService: TopicService,
+        private readonly postService: PostService,
+        private readonly userService: UserService) { }
+
+    @Get()
+    findAllTopics(): Promise<TopicModel[]> {
+        return this.topicService.findAllTopics();
+    }
+
+    @Get(':category')
+    async findTopicsByCategory(
+        @Param('category') category: string): Promise<TopicModel[]> {
+        return this.topicService.findTopicsByCategory(category);
+    }
+
+    // // does not work
+    // @Get(':username')
+    // async findTopicByUserName(
+    //     @Param('username') username: string) {
+    //     console.log('username is ' + username);
+    //     const user = await this.userService.findUserByUsername(username);
+    //     console.log('found user is');
+    //     console.log(user);
+    //     if (user !== undefined) {
+    //         const topics = await this.topicService.findTopicsByUser(user.userId);
+    //         console.log('found topics are');
+    //         console.log(topics);
+    //         if (topics.length > 0) {
+    //             return topics;
+    //         } else {
+    //             return username + ' has no topics yet.';
+    //         }
+    //     } else {
+    //         return HttpStatus.BAD_REQUEST;
+    //     }
+    // }
+
+    @Post(':username')
+    async createTopic(
+        @Body() topic: TopicModel,
+        @Param('username') username: string) {
+        const user = await this.userService.findUserByUsername(username);
+        if (user !== undefined) {
+            topic.topicStarter = user;
+            const newTopic = await this.topicService.createTopic(topic);
+            return newTopic;
+        } else {
+            return HttpStatus.BAD_REQUEST;
+        }
+    }
+
+    @Put(':topicId')
+    async updateTopic(
+        @Param('topicId') topicId: string,
+        @Body() topic: TopicModel) {
+        return await this.topicService.updateTopic(topicId, topic);
+    }
+
+    @Delete(':topicId')
+    async deleteTopic(
+        @Param('topicId') topicId: string) {
+        await this.topicService.deleteTopic(topicId);
+        return HttpStatus.OK;
+    }
+
+    @Post(':topicId/:username')
+    async postInTopic(
+        @Param('topicId') topicId: string,
+        @Param('username') username: string,
+        @Body() post: PostModel) {
+        const user = await this.userService.findUserByUsername(username);
+        if (user !== undefined) {
+            post.user = user;
+            const newPost = await this.postService.createPost(post);
+            const topic = await this.topicService.findTopicById(topicId);
+            topic.posts = [newPost];
+            return await this.topicService.updateTopic(topicId, topic);
+        } else {
+            return HttpStatus.BAD_REQUEST;
+        }
+    }
+
+}

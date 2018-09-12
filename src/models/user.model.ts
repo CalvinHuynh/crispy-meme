@@ -1,10 +1,11 @@
 import { ApiModelProperty } from '@nestjs/swagger';
 import { Column, Entity, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
 import { PostModel } from './post.model';
+import { TopicModel } from './topic.model';
 
 @Entity('User')
 export class UserModel {
-    // See if there is a type which represents a GUID
+    // Possible to use a GUID instead or another unique identifier other than id increments?
     @PrimaryGeneratedColumn({
         name: 'UserId',
     })
@@ -53,6 +54,10 @@ export class UserModel {
     // One user has many posts
     @OneToMany(type => PostModel, post => post.user)
     posts: PostModel[];
+
+    // One user has many topics
+    @OneToMany(type => TopicModel, topic => topic.topicStarter)
+    topics: TopicModel[];
 
     constructor(data: UserModel | {} = {}){
         Object.assign(this, data);

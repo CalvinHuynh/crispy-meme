@@ -35,6 +35,8 @@ export class UserService {
       email: user.email,
       birthDate: user.birthDate,
     });
+    // Check to see if it is possible use the then and catch
+    // to return the corresponding httpstatus code
     return await this.userRepository.save(newUser)
       .then(res => Promise.resolve(res))
       .catch(err => Promise.reject(err));

@@ -1,7 +1,9 @@
-import { Controller, Get, Param, Post, Body, Delete, Put } from '@nestjs/common';
+import { Controller, Get, Param, Post, Body, Delete, Put, HttpStatus } from '@nestjs/common';
 import { UserService } from './user.service';
 import { UserModel } from '../models/user.model';
+import { ApiUseTags } from '@nestjs/swagger';
 
+@ApiUseTags('User')
 @Controller('user')
 export class UserController {
     constructor(private readonly userService: UserService) { }
@@ -29,8 +31,7 @@ export class UserController {
     @Delete(':username')
     async removeByUsername(
         @Param('username') username: string) {
-        return this.userService.removeUserByUsername(username)
-            .then(res => Promise.resolve(res))
-            .catch(err => Promise.reject(err));
+        this.userService.removeUserByUsername(username);
+        return HttpStatus.OK;
     }
 }

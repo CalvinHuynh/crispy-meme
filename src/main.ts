@@ -6,17 +6,16 @@ import { createConnection } from 'typeorm';
 import { UserModel } from './models/user.model';
 import { GenerateEmail, GenerateUsername } from './helper/generator';
 
-// To be removed
-let globalFlag = 0;
-
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
   const options = new DocumentBuilder()
-    .setTitle('ALICE API Endpounts')
+    .setTitle('ALICE webdev endpoints')
     .setDescription('Try out the API\'s below')
     .setVersion('1.0')
-    .addTag('Stuff')
+    .addTag('User')
+    .addTag('Post')
+    .addTag('Topic')
     .build();
   const document = SwaggerModule.createDocument(app, options);
   SwaggerModule.setup('api', app, document);
@@ -27,23 +26,15 @@ async function bootstrap() {
 createConnection().then(async connection => {
 
   const userRepository = connection.getRepository(UserModel);
+  console.log('Creating new user...');
+  const user = new UserModel({
+    username: GenerateUsername(),
+    birthDate: new Date('2012-02-25'),
+    email: GenerateEmail(10, 5),
+  });
 
-  if (globalFlag === 0) {
-    console.log('Inserting a new user into the database...');
-    const user = new UserModel({
-      username: GenerateUsername(),
-      birthDate: new Date('2012-02-25'),
-      email: GenerateEmail(10, 5),
-    });
-
-    await userRepository.save(user);
-    console.log('Saved a new user: ' + user);
-    globalFlag++;
-
-    const allUsers = await userRepository.find();
-    console.log('All the users from the db: ', allUsers);
-  }
-
+  await userRepository.save(user);
+  await userRepository.find();
 }).catch(error => console.log(error));
 
 bootstrap();
