@@ -25,27 +25,21 @@ export class TopicController {
         return this.topicService.findTopicsByCategory(category);
     }
 
-    // // does not work
-    // @Get(':username')
-    // async findTopicByUserName(
-    //     @Param('username') username: string) {
-    //     console.log('username is ' + username);
-    //     const user = await this.userService.findUserByUsername(username);
-    //     console.log('found user is');
-    //     console.log(user);
-    //     if (user !== undefined) {
-    //         const topics = await this.topicService.findTopicsByUser(user.userId);
-    //         console.log('found topics are');
-    //         console.log(topics);
-    //         if (topics.length > 0) {
-    //             return topics;
-    //         } else {
-    //             return username + ' has no topics yet.';
-    //         }
-    //     } else {
-    //         return HttpStatus.BAD_REQUEST;
-    //     }
-    // }
+    @Get(':username/user')
+    async findTopicByUserName(
+        @Param('username') username: string) {
+        const user = await this.userService.findUserByUsername(username);
+        if (user !== undefined) {
+            const topics = await this.topicService.findTopicsByUser(user.userId);
+            if (topics.length > 0) {
+                return topics;
+            } else {
+                return username + ' has no topics yet.';
+            }
+        } else {
+            return HttpStatus.NOT_ACCEPTABLE;
+        }
+    }
 
     @Post(':username')
     async createTopic(
