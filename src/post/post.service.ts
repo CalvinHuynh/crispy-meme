@@ -2,6 +2,9 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { PostModel } from '../models/post.model';
+import { CreatePostDto } from './dto/create.post.dto';
+import { plainToClass } from 'class-transformer';
+import { UpdatePostDto } from './dto/update.post.dto';
 
 @Injectable()
 export class PostService {
@@ -14,15 +17,9 @@ export class PostService {
     return await this.postRepository.find();
   }
 
-  async createPost(post: PostModel): Promise<PostModel> {
-    const postToSaveOrUpdate = new PostModel({
-      title: post.title,
-      category: post.category,
-      text: post.text,
-      attachment: post.attachment,
-      user: post.user,
-    });
-    return await this.postRepository.save(postToSaveOrUpdate);
+  async createPost(post: CreatePostDto): Promise<PostModel> {
+    const newPost = plainToClass(PostModel, post);
+    return await this.postRepository.save(newPost);
   }
 
   async findPostsByUser(uId: string): Promise<PostModel[]> {
@@ -31,7 +28,7 @@ export class PostService {
       .getMany();
   }
 
-  async updatePost(post: PostModel, uId: string, pId: string): Promise<PostModel> {
+  async updatePost(post: UpdatePostDto, uId: string, pId: string): Promise<PostModel> {
     const postToUpdate =
       await this.postRepository.createQueryBuilder()
         .where('userUserId = :userId', { userId: uId })

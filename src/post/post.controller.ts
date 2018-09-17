@@ -3,6 +3,8 @@ import { PostService } from './post.service';
 import { PostModel } from '../models/post.model';
 import { UserService } from '../user/user.service';
 import { ApiUseTags } from '@nestjs/swagger';
+import { CreatePostDto } from './dto/create.post.dto';
+import { UpdatePostDto } from './dto/update.post.dto';
 
 @ApiUseTags('Posts')
 @Controller('posts')
@@ -34,7 +36,7 @@ export class PostController {
 
     @Post(':username')
     async createPost(
-        @Body() post: PostModel,
+        @Body() post: CreatePostDto,
         @Param('username') username: string) {
         const user = await this.userService.findUserByUsername(username);
         if (user !== undefined) {
@@ -50,7 +52,7 @@ export class PostController {
     async updatePost(
         @Param('username') username: string,
         @Param('postId') postId: string,
-        @Body() post: PostModel): Promise<PostModel> {
+        @Body() post: UpdatePostDto): Promise<PostModel> {
         const user = await this.userService.findUserByUsername(username);
         return await this.postService.updatePost(post, user.userId, postId);
     }

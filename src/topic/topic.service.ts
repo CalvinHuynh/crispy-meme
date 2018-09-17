@@ -2,6 +2,10 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { TopicModel } from '../models/topic.model';
+import { plainToClass } from 'class-transformer';
+
+import { CreateTopicDto } from './dto/create.topic.dto';
+import { UpdateTopicDto } from './dto/update.topic.dto';
 
 @Injectable()
 export class TopicService {
@@ -40,19 +44,14 @@ export class TopicService {
         return await this.topicRepository.remove(topic);
     }
 
-    async createTopic(topic: TopicModel): Promise<TopicModel> {
-        const newTopic = new TopicModel({
-            title: topic.title,
-            category: topic.category,
-            description: topic.description,
-            topicStarter: topic.topicStarter,
-        });
+    async createTopic(topic: CreateTopicDto): Promise<TopicModel> {
+        const newTopic = plainToClass(TopicModel, topic);
         return await this.topicRepository.save(newTopic)
             .then(res => Promise.resolve(res))
             .catch(err => Promise.reject(err));
     }
 
-    async updateTopic(tId: string, topic: TopicModel): Promise<TopicModel> {
+    async updateTopic(tId: string, topic: UpdateTopicDto): Promise<TopicModel> {
         const topicToUpdate =
             await this.topicRepository.createQueryBuilder()
                 .where('TopicId = :topicId', { topicId: tId })
