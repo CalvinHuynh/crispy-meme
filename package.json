@@ -25,6 +25,7 @@
     "@nestjs/swagger": "^2.5.1",
     "@nestjs/typeorm": "^5.2.1",
     "ajv": "^6.5.3",
+    "class-transformer": "^0.1.9",
     "mssql": "^4.1.0",
     "reflect-metadata": "^0.1.12",
     "rxjs": "^6.2.2",

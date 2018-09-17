@@ -6,8 +6,8 @@ import { TopicModel } from '../models/topic.model';
 import { ApiUseTags } from '@nestjs/swagger';
 import { PostModel } from '../models/post.model';
 
-@ApiUseTags('Topic')
-@Controller('topic')
+@ApiUseTags('Topics')
+@Controller('topics')
 export class TopicController {
     constructor(
         private readonly topicService: TopicService,
@@ -25,7 +25,7 @@ export class TopicController {
         return this.topicService.findTopicsByCategory(category);
     }
 
-    @Get(':username/user')
+    @Get('users/:username')
     async findTopicByUserName(
         @Param('username') username: string) {
         const user = await this.userService.findUserByUsername(username);
@@ -69,7 +69,7 @@ export class TopicController {
         return HttpStatus.OK;
     }
 
-    @Post(':topicId/:username')
+    @Post(':topicId/users/:username')
     async postInTopic(
         @Param('topicId') topicId: string,
         @Param('username') username: string,

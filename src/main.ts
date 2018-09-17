@@ -8,14 +8,23 @@ import { GenerateEmail, GenerateUsername } from './helper/generator';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+  app.enableCors();
+
+  app.use((req, res, next) => {
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+    res.setHeader('Access-Control-Allow-Credentials', true);
+    next();
+  });
 
   const options = new DocumentBuilder()
     .setTitle('ALICE webdev endpoints')
     .setDescription('Try out the API\'s below')
     .setVersion('1.0')
-    .addTag('User')
-    .addTag('Post')
-    .addTag('Topic')
+    .addTag('Users')
+    .addTag('Posts')
+    .addTag('Topics')
     .build();
   const document = SwaggerModule.createDocument(app, options);
   SwaggerModule.setup('api', app, document);

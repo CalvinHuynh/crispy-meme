@@ -4,8 +4,8 @@ import { PostModel } from '../models/post.model';
 import { UserService } from '../user/user.service';
 import { ApiUseTags } from '@nestjs/swagger';
 
-@ApiUseTags('Post')
-@Controller('post')
+@ApiUseTags('Posts')
+@Controller('posts')
 export class PostController {
     constructor(
         private readonly postService: PostService,
@@ -46,7 +46,7 @@ export class PostController {
         }
     }
 
-    @Put(':username/:postId')
+    @Put(':username/post/:postId')
     async updatePost(
         @Param('username') username: string,
         @Param('postId') postId: string,
@@ -55,7 +55,7 @@ export class PostController {
         return await this.postService.updatePost(post, user.userId, postId);
     }
 
-    @Delete(':username/:postId')
+    @Delete(':username/post/:postId')
     async deletePost(
         @Param('username') username: string,
         @Param('postId') postId: string) {

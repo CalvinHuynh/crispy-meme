@@ -2,6 +2,9 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { UserModel } from '../models/user.model';
+import { CreateUserDto } from './dto/create.user.dto';
+import { plainToClass } from 'class-transformer';
+import { UpdateUserDto } from './dto/update.user.dto';
 
 @Injectable()
 export class UserService {
@@ -28,13 +31,10 @@ export class UserService {
     return await this.userRepository.remove(user);
   }
 
-  async createUser(user: UserModel): Promise<UserModel> {
+  async createUser(user: CreateUserDto): Promise<UserModel> {
     // Create new user
-    const newUser = new UserModel({
-      username: user.username,
-      email: user.email,
-      birthDate: user.birthDate,
-    });
+    const newUser = plainToClass(UserModel, user);
+
     // Check to see if it is possible use the then and catch
     // to return the corresponding httpstatus code
     return await this.userRepository.save(newUser)
@@ -42,10 +42,10 @@ export class UserService {
       .catch(err => Promise.reject(err));
   }
 
-  async updateUser(user: UserModel): Promise<UserModel> {
+  async updateUser(username: string, user: UpdateUserDto): Promise<UserModel> {
     const userToUpdate =
       await this.userRepository.createQueryBuilder()
-        .where('Username = :name', { name: user.username })
+        .where('Username = :name', { name: username })
         .getOne();
     if (typeof userToUpdate === 'object') {
       userToUpdate.email = user.email;
