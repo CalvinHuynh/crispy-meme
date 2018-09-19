@@ -1,4 +1,4 @@
-import { Controller, Get, Param, Post, Body, Delete, Put, HttpStatus } from '@nestjs/common';
+import { Controller, Get, Param, Post, Body, Delete, HttpStatus, Patch } from '@nestjs/common';
 import { UserService } from './user.service';
 import { UserModel } from '../models/user.model';
 import { ApiUseTags } from '@nestjs/swagger';
@@ -30,7 +30,7 @@ export class UserController {
         return this.userService.findUserByUsername(username);
     }
 
-    @Put(':username')
+    @Patch(':username')
     async updateUser(
         @Param('username') username: string,
         @Body() user: UpdateUserDto): Promise<UserModel> {

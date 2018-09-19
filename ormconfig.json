@@ -1,0 +1,16 @@
+{
+    "type": "mssql",
+    "host": "localhost",
+    "port": 1433,
+    "username": "",
+    "password": "",
+    "database": "",
+    "synchronize": true,
+    "logging": false,
+    "options": {
+        "encrypt": true
+    },
+    "entities": [
+       "src/models/*.ts"
+    ]
+ }

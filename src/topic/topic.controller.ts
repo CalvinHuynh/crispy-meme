@@ -4,9 +4,10 @@ import { PostService } from '../post/post.service';
 import { UserService } from '../user/user.service';
 import { TopicModel } from '../models/topic.model';
 import { ApiUseTags } from '@nestjs/swagger';
-import { PostModel } from '../models/post.model';
+
 import { CreateTopicDto } from './dto/create.topic.dto';
 import { UpdateTopicDto } from './dto/update.topic.dto';
+import { CreateTopicPostDto } from './dto/create.topic.post.dto';
 
 @ApiUseTags('Topics')
 @Controller('topics')
@@ -75,7 +76,7 @@ export class TopicController {
     async postInTopic(
         @Param('topicId') topicId: string,
         @Param('username') username: string,
-        @Body() post: PostModel) {
+        @Body() post: CreateTopicPostDto) {
         const user = await this.userService.findUserByUsername(username);
         if (user !== undefined) {
             post.user = user;
