@@ -35,7 +35,6 @@ async function bootstrap() {
 createConnection().then(async connection => {
 
   const userRepository = connection.getRepository(UserModel);
-  console.log('Creating new user...');
   const user = new UserModel({
     username: GenerateUsername(),
     birthDate: new Date('2012-02-25'),
@@ -44,6 +43,6 @@ createConnection().then(async connection => {
 
   await userRepository.save(user);
   await userRepository.find();
-}).catch(error => console.log(error));
+}).catch();
 
 bootstrap();
