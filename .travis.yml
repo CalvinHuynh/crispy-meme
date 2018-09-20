@@ -1,23 +1,9 @@
 language: node_js
 node_js:
-  - "8"
-  - "9"
-  - "10"
+ - 'stable'
 cache:
   directories:
-    - "node_modules"
-git:
-  depth: 5
-addons:
-  firefox: "latest"
-before_script:
-  - export DISPLAY=:99.0
-  - sh -e /etc/init.d/xvfb start
-before_install:
-  - npm i -g npm@latest
+  - "node_modules"
 install:
-  - npm ci
-  - npm build
-script:
-  - echo "what are tests?"
-after_success: npm run coverage
+ - npm install
+script: tslint -c tslint.json 'src/**/*.ts'
