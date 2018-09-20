@@ -18,4 +18,6 @@ before_install:
 install:
   - npm ci
   - npm build
+script:
+  - echo "what are tests?"
 after_success: npm run coverage
