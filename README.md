@@ -1,3 +1,4 @@
+![travis-ci build](https://travis-ci.com/CalvinHuynh/s4s-alice-metadata-assignment.svg?token=EZdrkqW2ptpUfsUwHc83&branch=master)  
 # s4s backend API
 Individual assignment backend API.
 
