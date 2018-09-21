@@ -1,4 +1,4 @@
-![travis-ci build](https://travis-ci.com/CalvinHuynh/s4s-alice-metadata-assignment.svg?token=EZdrkqW2ptpUfsUwHc83&branch=master)  
+[![Build Status](https://travis-ci.com/CalvinHuynh/s4s-webdev-fe-assignment.svg?branch=master)](https://travis-ci.com/CalvinHuynh/s4s-webdev-fe-assignment)
 # s4s backend API
 Individual assignment backend API.
 
