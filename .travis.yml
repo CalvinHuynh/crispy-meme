@@ -6,4 +6,8 @@ cache:
   - "node_modules"
 install:
  - npm install
-script: tslint -c tslint.json 'src/**/*.ts'
+script: 
+ - npm install codecov -g
+ - tslint -c tslint.json 'src/**/*.ts'
+after_success:
+ - codecov
